@@ -2,7 +2,7 @@ import { User } from "discord.js";
 import { Guild } from "@yamdbf/core";
 import client from "../client";
 
-type UserDataOrEmpty = UserData | undefined;
+type UserDataOrEmpty = UserData | null;
 
 function userDataKey(user: User, guild: Guild) {
   return `${user.username}-${guild.id}`;
@@ -11,7 +11,7 @@ function userDataKey(user: User, guild: Guild) {
 export async function getUserData(user: User, guild: Guild): Promise<UserDataOrEmpty> {
   const data = await client.storage.get(userDataKey(user, guild));
   if (!data) {
-    return undefined;
+    return null;
   }
   return JSON.parse(data);
 }
