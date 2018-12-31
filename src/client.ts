@@ -2,12 +2,13 @@ import { join } from 'path';
 import { Client, Message, Providers } from '@yamdbf/core';
 import processKarma from './karma';
 import { startQueues } from './queues';
+import config from './config';
 
 const client = new Client({
   provider: Providers.JSONProvider,
   commandsDir: join(__dirname, 'commands'),
-  token: 'MzgwNTQ4ODgzMzA4MzQ3Mzkz.DsaFNw.SMva2Xo5ZIrfEAXDE9FRMUg6cF0',
-  owner: 'omarestrella',
+  token: config.token,
+  owner: config.owner,
   pause: true
 });
 
