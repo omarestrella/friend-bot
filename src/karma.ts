@@ -63,10 +63,10 @@ export default function processKarma(message: Message) {
 
   const [mentionedUser] = users;
 
-  // if (mentionedUser.id === author.id) {
-  //   console.log('Cannot give karma to yourself:', mentionedUser.username);
-  //   return;
-  // }
+  if (mentionedUser.id === author.id) {
+    console.log('Cannot give karma to yourself:', mentionedUser.username);
+    return;
+  }
 
   const amount = parseInt(match[1], 10);
   if (isNaN(amount)) {
