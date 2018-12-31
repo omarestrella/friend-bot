@@ -6,6 +6,7 @@ import client from './client';
 type Bet = {
   id: string
   amount: number
+  data: string
 }
 
 type StoredEvent = {
@@ -43,7 +44,7 @@ async function storeNewEvent(event: StoredEvent, guild: Guild) {
   return client.storage.set(dataKey, JSON.stringify(data));
 }
 
-export async function placeBet(message: Message, eventName: string, amount: number): Promise<boolean> {
+export async function placeBet(message: Message, eventName: string, amount: number, data: string): Promise<boolean> {
   const events = await getCurrentEvents(message.guild);
   const currentEvent = events.find(event => event.name === eventName);
   if (!currentEvent) {
@@ -57,6 +58,7 @@ export async function placeBet(message: Message, eventName: string, amount: numb
   let currentUserBet = currentEvent.bets.find(bet => bet.id === message.author.id);
   if (!currentUserBet) {
     currentUserBet = {
+      data,
       id: message.author.id,
       amount: 0
     };
@@ -94,4 +96,11 @@ export async function setupBettingEvent(message: Message, eventName: string) {
   };
 
   return storeNewEvent(newEvent, message.guild);
+}
+
+export async function endEvent(message: Message, event: StoredEvent) {
+  const events = await getCurrentEvents(message.guild);
+  const currentEvents = events.filter(storedEvent => storedEvent.name !== event.name);
+  console.log('Removing event:', event);
+  return await setCurrentEvents(currentEvents, message.guild);
 }

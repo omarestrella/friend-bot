@@ -8,12 +8,12 @@ export default class CustomCommand extends Command {
     super({
       name: 'place-bet',
       desc: 'List current events that can be bet on',
-      usage: '<prefix>place-bet <event name> <amount of karma>'
+      usage: '<prefix>place-bet <event name> <amount of karma> <bet>'
     });
   }
 
   async action(message: Message, args: string[]) {
-    let [eventName, karmaString] = args;
+    let [eventName, karmaString, data] = args;
 
     if (!eventName) {
       message.channel.send('Please provide an event name.');
@@ -22,6 +22,11 @@ export default class CustomCommand extends Command {
 
     if (!karmaString) {
       message.channel.send('Please provide an amount of karma to bet.');
+      return;
+    }
+
+    if (!data) {
+      message.channel.send(`Provide your bet for ${eventName}`);
       return;
     }
 
@@ -40,7 +45,7 @@ export default class CustomCommand extends Command {
     userData.karmaBank -= karma;
     await setUserData(message.author, message.guild, userData);
 
-    const placed = await placeBet(message, eventName, karma);
+    const placed = await placeBet(message, eventName, karma, data);
 
     if (placed) {
       message.channel.send(`Successfully placed bet for ${karma} on ${eventName}`);

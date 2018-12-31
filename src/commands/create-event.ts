@@ -1,6 +1,7 @@
 import { Command, CommandDecorators, Message } from '@yamdbf/core';
 
 import { setupBettingEvent } from '../bets';
+import { filterMentionsFromCommandArgs } from '../utils/messageParsing';
 
 export default class CustomCommand extends Command {
   public constructor() {
@@ -12,6 +13,8 @@ export default class CustomCommand extends Command {
   }
 
   action(message: Message, args: string[]) {
+    const eventName = filterMentionsFromCommandArgs(args).join(' ');
+
     if (args.length < 2) {
       this.respond(message, 'Provide a name and arbiter for the event you are placing bets for.');
       return;
@@ -22,8 +25,8 @@ export default class CustomCommand extends Command {
       return;
     }
 
-    setupBettingEvent(message, args[0]).then(() => {
-      message.channel.send(`Start placing bets on "${args[0]}"!`);
+    setupBettingEvent(message, eventName).then(() => {
+      message.channel.send(`Start placing bets on ${eventName}!`);
     }).catch((err: Error) => {
       console.error('Error setting up event:', err);
       message.channel.send(`Couldnt create the event. Error: ${err.message}`)
