@@ -35,7 +35,13 @@ async function increaseKarma(sender: User, reciever: User, amount: number, messa
 
   await setUserData(sender, message.guild, senderData);
 
-  const recieverData = await getUserData(reciever, message.guild);
+  let recieverData = await getUserData(reciever, message.guild);
+  if (!recieverData) {
+    recieverData = {
+      karma: 0,
+      karmaBank: 10
+    };
+  }
   recieverData.karma += amount;
   recieverData.karmaBank += amount + 1;
   return setUserData(reciever, message.guild, recieverData)

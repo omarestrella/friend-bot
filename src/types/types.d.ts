@@ -1,4 +1,4 @@
-type UserData = object & {
+interface UserData {
   karma: number
   karmaBank: number
 }
