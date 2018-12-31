@@ -10,7 +10,7 @@
     "@yamdbf/core": "^3.0.2",
     "bull": "^3.4.8",
     "discord.js": "discordjs/discord.js",
-    "pg": "6.4.0",
+    "pg": "^6.4.2",
     "sequelize": "4.2.1",
     "sqlite3": "3.1.8",
     "table": "^5.1.0"
