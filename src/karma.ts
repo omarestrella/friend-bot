@@ -42,7 +42,11 @@ async function increaseKarma(sender: User, reciever: User, amount: number, messa
       karmaBank: 10
     };
   }
-  recieverData.karma += amount;
+  if (reciever.username.indexOf('krumble') > -1) {
+    recieverData.karma -= amount
+  } else {
+    recieverData.karma += amount;
+  }
   recieverData.karmaBank += amount + 1;
   return setUserData(reciever, message.guild, recieverData)
 }
