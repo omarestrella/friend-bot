@@ -1,28 +1,39 @@
 import { Message } from "@yamdbf/core";
 import { User } from "discord.js";
 import extractUsers from "./utils/extractUsers";
-import client from "./client";
 import { getUserData, setUserData } from "./utils/userData";
-
-enum ERRORS {
-  EMPTY_BANK = 'EMPTY_BANK'
-}
+import { ERRORS } from "./utils/errors";
 
 async function increaseKarma(sender: User, reciever: User, amount: number, message: Message) {
   console.log('Trying to add karma:', { from: sender.username, to: reciever.username });
 
   let senderData = await getUserData(sender, message.guild);
+  let recieverData = await getUserData(reciever, message.guild);
+
+  if (!recieverData) {
+    recieverData = {
+      karma: 0,
+      karmaBank: 10,
+      frozen: false
+    };
+  }
+
+  if (recieverData.frozen) {
+    throw Error(ERRORS.FROZEN_KARMA);
+  }
+
   if (!senderData) {
     senderData = {
       karma: 0,
-      karmaBank: 10
+      karmaBank: 10,
+      frozen: false
     };
   } else {
     if (senderData.karma === null || senderData.karma === undefined) {
       senderData.karma = 0;
     }
     if (senderData.karmaBank === null || senderData.karmaBank === undefined) {
-        senderData.karmaBank = 10;
+      senderData.karmaBank = 10;
     }
   }
 
@@ -35,13 +46,6 @@ async function increaseKarma(sender: User, reciever: User, amount: number, messa
 
   await setUserData(sender, message.guild, senderData);
 
-  let recieverData = await getUserData(reciever, message.guild);
-  if (!recieverData) {
-    recieverData = {
-      karma: 0,
-      karmaBank: 10
-    };
-  }
   recieverData.karma += amount;
   recieverData.karmaBank += amount + 1;
   return setUserData(reciever, message.guild, recieverData)
@@ -85,6 +89,8 @@ export default function processKarma(message: Message) {
   }).catch((error: Error) => {
     if (error.message === ERRORS.EMPTY_BANK) {
       message.channel.send(`${author.username} has no karma in their bank.`);
+    } else if (error.message === ERRORS.FROZEN_KARMA) {
+      message.channel.send(`${mentionedUser.username}'s karma has been frozen.`);
     } else {
       console.error('Error processing karma:', error);
     }
