@@ -9,7 +9,8 @@ export default class KarmaCommand extends Command {
     super({
       name: 'freeze',
       desc: 'Freeze a user\'s karma',
-      usage: '<prefix>freeze <username>'
+      usage: '<prefix>freeze <username>',
+      ownerOnly: true
     });
   }
 
