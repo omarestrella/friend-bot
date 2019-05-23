@@ -32,9 +32,13 @@ export default class KarmaCommand extends Command {
 
     if (user) {
       const data = await getUserData(user, message.guild);
-      data.frozen = true;
+      data.frozen = !data.frozen;
       await setUserData(user, message.guild, data);
-      message.channel.send(`${user.username}'s karma has been frozen.`);
+      if (data.frozen) {
+        message.channel.send(`${user.username}'s karma has been frozen.`);
+      } else {
+        message.channel.send(`${user.username}'s karma has been unfrozen.`);
+      }
     }
   }
 }
